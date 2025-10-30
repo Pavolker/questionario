@@ -477,7 +477,6 @@
                 <div class="mt-8 flex justify-between">
                     <button id="btnVoltarConfirmacao" class="px-6 py-3 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400">← Voltar</button>
                     <div class="flex gap-2">
-                        <a href="relatorio.txt" target="_blank" class="px-6 py-3 bg-slate-800 text-white font-semibold rounded-lg hover:bg-slate-900">Ver Modelo TXT</a>
                         <button id="btnExportarPDF" class="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700">Exportar PDF</button>
                         <button id="btnBaixarHTML" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">Baixar HTML</button>
                     </div>
