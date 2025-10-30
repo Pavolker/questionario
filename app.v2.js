@@ -3,6 +3,44 @@
     'use strict';
     
     const CONFIG = window.QUESTIONARIO_CONFIG || {};
+    // Fallbacks defensivos caso config.js não carregue em produção
+    const MAP_DEFAULT = {
+        1: 'materia_prima',
+        2: 'residuos',
+        3: 'desmonte',
+        4: 'descarte',
+        5: 'recuperacao',
+        6: 'reciclagem',
+        7: 'durabilidade',
+        8: 'reparavel',
+        9: 'reaproveitavel',
+        10: 'ciclo_estendido',
+        11: 'ciclo_rastreado',
+        12: 'documentacao'
+    };
+    const MET_DEFAULT = {
+        PONTOS: {
+            1: { 1: 0, 2: 2, 3: 3, 4: 2, 5: 1 },
+            2: { 1: 0, 2: 2, 3: 1 },
+            5: { 1: 0, 2: 2, 3: 1 },
+            6: { 1: 1, 2: 0, 3: 1 },
+            default: { 1: 2, 2: 0, 3: 1 }
+        },
+        GRUPOS: {
+            INPUT: [1],
+            RESIDUOS: [2],
+            OUTPUT: [3, 4, 5, 6],
+            VIDA: [7, 8, 9],
+            MONITORAMENTO: [10, 11, 12]
+        },
+        PESOS: {
+            INPUT: 0.25,
+            RESIDUOS: 0.20,
+            OUTPUT: 0.20,
+            VIDA: 0.20,
+            MONITORAMENTO: 0.15
+        }
+    };
     const QUESTÕES = Array.isArray(CONFIG.QUESTÕES) ? CONFIG.QUESTÕES : [];
     
     const elementos = {
@@ -167,7 +205,7 @@
             if (empresaError) throw empresaError;
             
             // 2. Preparar dados do questionário usando o mapeamento
-            const respostasMapeadas = Object.entries(CONFIG.MAPEAMENTO_RESPOSTAS).reduce((acc, [id, coluna]) => {
+            const respostasMapeadas = Object.entries(CONFIG.MAPEAMENTO_RESPOSTAS || MAP_DEFAULT).reduce((acc, [id, coluna]) => {
                 acc[coluna] = dados.respostas[parseInt(id, 10)] || null;
                 return acc;
             }, {});
@@ -248,7 +286,7 @@
     }
 
     function calcularPontuacao() {
-        const MET = CONFIG.METODOLOGIA;
+        const MET = CONFIG.METODOLOGIA || MET_DEFAULT;
         const r = dados.respostas;
         let pontos = 0;
         let totalPossivel = 0;
@@ -263,7 +301,7 @@
             }
         }
 
-        const percentual = Math.round((pontos / totalPossivel) * 100);
+        const percentual = totalPossivel > 0 ? Math.round((pontos / totalPossivel) * 100) : 0;
 
         // Cálculo por grupos e índice de maturidade (média ponderada dos grupos)
         const grupos = {};
